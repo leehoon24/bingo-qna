@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>빙고판을 채우자 — 자주 묻는 질문</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+  :root{
+    --leaf:#16a34a;        /* 깊은 잎새 그린 (주색) */
+    --leaf-dark:#15803d;
+    --sprout:#22c55e;      /* 새싹 그린 */
+    --lime:#84cc16;        /* 라임 포인트 */
+    --ink:#052e16;         /* 진한 그린 잉크 (제목) */
+    --mint:#f0fdf4;        /* 민트 배경 */
+  }
+  *{ -webkit-tap-highlight-color:transparent; }
+  html{ scroll-behavior:smooth; }
+  body{ font-family:'Pretendard','Apple SD Gothic Neo',sans-serif; color:#334155; }
+  section[id], #home{ scroll-margin-top:76px; }
+
+  .ic{ width:1em; height:1em; display:inline-block; vertical-align:-0.125em; flex-shrink:0; }
+  .nav-btn{ background:none; border:none; cursor:pointer; font:inherit; }
+
+  /* 히어로 배경 */
+  .leaf-mesh{
+    background:
+      radial-gradient(55% 60% at 85% 10%, rgba(132,204,22,.18) 0%, transparent 60%),
+      radial-gradient(60% 65% at 8% 90%, rgba(34,197,94,.16) 0%, transparent 60%),
+      linear-gradient(180deg,#ffffff 0%, var(--mint) 100%);
+  }
+
+  /* ===== 아코디언 ===== */
+  .faq-item{ border:1px solid #e2e8f0; border-radius:16px; background:#fff; overflow:hidden; transition:border-color .15s ease, box-shadow .15s ease; }
+  .faq-item.open{ border-color:var(--sprout); box-shadow:0 8px 22px -14px rgba(22,163,74,.35); }
+  .faq-q{ width:100%; text-align:left; background:none; border:none; cursor:pointer; font:inherit;
+    display:flex; align-items:center; gap:12px; padding:18px 20px; color:var(--ink); font-weight:700; }
+  .faq-q .chev{ margin-left:auto; color:#94a3b8; transition:transform .25s ease; flex-shrink:0; }
+  .faq-item.open .faq-q .chev{ transform:rotate(180deg); color:var(--leaf); }
+  .faq-a{ padding:0 20px; max-height:0; overflow:hidden; transition:max-height .3s ease, padding .3s ease; color:#475569; line-height:1.7; font-size:.94rem; }
+  .faq-item.open .faq-a{ padding:0 20px 18px 20px; max-height:600px; }
+  .faq-num{ width:24px; height:24px; border-radius:7px; background:var(--mint); color:var(--leaf);
+    font-size:.7rem; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+
+  .chip{ cursor:pointer; border:1.5px solid #e2e8f0; background:#fff; color:#475569; font-weight:600;
+    font-size:.82rem; padding:7px 15px; border-radius:999px; transition:all .15s ease; white-space:nowrap; }
+  .chip:hover{ border-color:var(--sprout); color:var(--leaf-dark); }
+  .chip.active{ background:var(--leaf); border-color:var(--leaf); color:#fff; }
+
+  .reveal{ opacity:0; transform:translateY(20px); transition:opacity .6s ease, transform .6s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .reveal{ opacity:1!important; transform:none!important; transition:none!important; }
+  }
+</style>
+</head>
+<body class="bg-white">
+
+<!-- ===== 아이콘 정의 (인라인 내장) ===== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-sprout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 20h10"/><path d="M12 20c0-7 0-9 0-12"/><path d="M12 8C12 5 9.5 3 6 3 6 6.5 8 9 12 9"/><path d="M12 11c0-3 2.5-5 6-5 0 3.5-2 6-6 6"/>
+  </symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+  </symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>
+  </symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="6 9 12 15 18 9"/>
+  </symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="20 6 9 17 4 12"/>
+  </symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 9.5 9.5 0 0 1-4-.9L3 21l1.9-5.5a8.38 8.38 0 0 1-.9-4A8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5Z"/>
+  </symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>
+  </symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+  </symbol>
+</svg>
+
+<!-- ===== HEADER ===== -->
+<header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-green-100">
+  <div class="max-w-5xl mx-auto px-5 h-[60px] flex items-center justify-between">
+    <button onclick="scrollToId('home')" class="nav-btn flex items-center gap-2">
+      <span class="w-8 h-8 rounded-lg flex items-center justify-center text-white" style="background:linear-gradient(135deg,var(--sprout),var(--lime))">
+        <svg class="ic w-4 h-4"><use href="#i-sprout"/></svg>
+      </span>
+      <span class="font-black text-[17px]" style="color:var(--ink)">빙고판을 채우자</span>
+    </button>
+    <nav class="flex items-center gap-2">
+      <button onclick="scrollToId('faq')" class="nav-btn text-sm font-semibold text-slate-600 hover:text-green-700 px-3 py-2">자주 묻는 질문</button>
+      <button onclick="scrollToId('contact')" class="text-white text-sm font-bold px-4 py-2 rounded-lg transition-colors" style="background:var(--leaf)" onmouseover="this.style.background='var(--leaf-dark)'" onmouseout="this.style.background='var(--leaf)'">문의하기</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- ===== HERO ===== -->
+  <section id="home" class="leaf-mesh">
+    <div class="max-w-2xl mx-auto px-5 pt-16 pb-16 lg:pt-24 lg:pb-20 text-center">
+      <span class="reveal inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full" style="background:#dcfce7;color:var(--leaf-dark)">
+        <svg class="ic w-3.5 h-3.5"><use href="#i-grid"/></svg> 청년인턴 팀 빙고 챌린지
+      </span>
+      <h1 class="reveal mt-5 text-4xl lg:text-5xl font-black leading-[1.15] tracking-tight" style="color:var(--ink)">
+        무엇이든 물어보세요
+      </h1>
+      <p class="reveal mt-4 text-lg text-slate-600 leading-relaxed">
+        '빙고판을 채우자'에 대해 자주 묻는 질문을 모았어요.<br class="hidden sm:block">
+        아래에서 검색하거나 카테고리로 골라보세요.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section id="faq" class="py-16 lg:py-24 bg-white">
+    <div class="max-w-3xl mx-auto px-5">
+      <div class="reveal text-center mb-8">
+        <span class="text-xs font-bold tracking-widest uppercase" style="color:var(--leaf)">FAQ</span>
+        <h2 class="mt-2 text-3xl lg:text-4xl font-black" style="color:var(--ink)">자주 묻는 질문</h2>
+        <p class="mt-3 text-slate-500">키워드로 검색하거나 카테고리로 골라보세요.</p>
+      </div>
+
+      <!-- 검색 -->
+      <div class="reveal relative max-w-lg mx-auto mb-6">
+        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"><svg class="ic w-5 h-5"><use href="#i-search"/></svg></span>
+        <input id="search" type="text" oninput="applyFilter()" placeholder="질문 검색 (예: 팀, 인증, 기간)"
+          class="w-full pl-11 pr-10 py-3.5 rounded-2xl border-2 border-green-100 bg-white text-sm focus:outline-none focus:border-green-400 transition-colors">
+        <button id="search-clear" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
+          <svg class="ic w-3 h-3"><use href="#i-x"/></svg>
+        </button>
+      </div>
+
+      <!-- 카테고리 칩 -->
+      <div id="chips" class="reveal flex flex-wrap justify-center gap-2 mb-7"></div>
+
+      <!-- 질문 목록 -->
+      <div id="faq-list" class="reveal space-y-3"></div>
+
+      <!-- 결과 없음 -->
+      <div id="noresult" class="hidden text-center py-12">
+        <div class="w-12 h-12 mx-auto rounded-2xl bg-green-50 text-green-500 flex items-center justify-center mb-3">
+          <svg class="ic w-6 h-6"><use href="#i-search"/></svg>
+        </div>
+        <p class="text-slate-500">찾는 질문이 없어요. 검색어를 바꾸거나, 아래로 문의해 주세요.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <section id="contact" class="py-16 lg:py-20" style="background:var(--mint)">
+    <div class="max-w-2xl mx-auto px-5 text-center reveal">
+      <div class="w-12 h-12 mx-auto rounded-2xl flex items-center justify-center text-white mb-5" style="background:linear-gradient(135deg,var(--sprout),var(--lime))">
+        <svg class="ic w-6 h-6"><use href="#i-chat"/></svg>
+      </div>
+      <h2 class="text-2xl lg:text-3xl font-black" style="color:var(--ink)">찾는 답이 없나요?</h2>
+      <p class="mt-3 text-slate-600">운영진에게 직접 물어보세요. 카카오톡이나 이메일로 편하게 연락 주시면 됩니다.</p>
+      <div class="mt-7 flex flex-wrap justify-center gap-3">
+        <button onclick="showContact('kakao')" class="inline-flex items-center gap-2 font-bold px-6 py-3.5 rounded-2xl text-white transition-transform hover:-translate-y-0.5" style="background:var(--leaf)">
+          <svg class="ic w-5 h-5"><use href="#i-chat"/></svg> 카카오톡 문의
+        </button>
+        <button onclick="showContact('mail')" class="inline-flex items-center gap-2 font-bold px-6 py-3.5 rounded-2xl border-2 transition-transform hover:-translate-y-0.5" style="border-color:var(--leaf);color:var(--leaf-dark)">
+          <svg class="ic w-5 h-5"><use href="#i-mail"/></svg> 이메일 문의
+        </button>
+      </div>
+
+      <!-- 클릭 시 뜨는 안내문 -->
+      <div id="contact-msg" class="hidden mt-5 max-w-md mx-auto rounded-2xl bg-white border-2 px-5 py-4 text-left flex items-start gap-3" style="border-color:#bbf7d0">
+        <span id="contact-msg-ic" class="mt-0.5 text-green-600"></span>
+        <p id="contact-msg-text" class="text-sm text-slate-700 leading-relaxed"></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="bg-white border-t border-green-100 py-8 px-5">
+  <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
+    <div class="flex items-center gap-2">
+      <span class="w-6 h-6 rounded-lg flex items-center justify-center text-white" style="background:linear-gradient(135deg,var(--sprout),var(--lime))"><svg class="ic w-3 h-3"><use href="#i-sprout"/></svg></span>
+      <span class="font-bold text-slate-600">빙고판을 채우자</span>
+    </div>
+    <div>© 2026 빙고판을 채우자 · 청년인턴 프로그램</div>
+  </div>
+</footer>
+
+<script>
+  /* =====================================================================
+     ▼▼▼  여기만 고치면 됩니다  ▼▼▼
+     질문을 추가하려면 아래 목록에 { cat, q, a } 한 줄을 더 넣으세요.
+       - cat : 카테고리 이름 (같은 이름끼리 묶이고, 새 이름을 쓰면 칩이 자동 생성됨)
+       - q   : 질문
+       - a   : 답변
+     순서는 적은 순서대로 화면에 나옵니다.
+     ===================================================================== */
+  const faqs = [
+    { cat:'미션 안내', q:'정책 현장 개선 아이디어가 무엇인가요?',
+      a:'정책 현장 개선 아이디어란, 빙고판 미션 중 방문하게 되는 백년가게·전통시장·골목형 상점가 중 한 곳에 대한 개선 아이디어를 정해진 양식에 맞추어 1페이지 이내로 제출하는 것입니다. 즉, 여러분이 직접 중기부의 주요 정책 현장에 대한 개선안을 제시하는 미션입니다.' },
+    { cat:'미션 안내', q:'백년가게는 어디서 찾을 수 있나요?',
+      a:'(답변 미작성 — 백년가게를 찾는 방법이나 링크를 여기에 입력하세요.)' },
+    { cat:'미션 안내', q:'온누리 상품권은 어떻게 사용하나요?',
+      a:'온누리 상품권은 디지털온누리 앱을 다운로드한 뒤, 앱 내에서 금액을 충전하여 사용할 수 있습니다.' },
+    { cat:'미션 안내', q:'타 지방청 방문하기는 어떻게 하나요?',
+      a:'타 지방청 방문 미션은 해당 미션에 참여하는 팀의 팀장끼리 서로 연락해 방문 일자를 잡고 방문하시면 됩니다. 다른 팀을 방문할 때는 자신이 근무하는 청을 간략히 소개하고, 맡은 업무와 하는 일 등을 소개하면 됩니다. 소개 이후 시간이 되면 함께 점심 식사를 해도 좋습니다. 점심 식사는 선택 사항입니다.' },
+    { cat:'참여·인증', q:'인증은 아무 시간에 하면 되나요?',
+      a:'인증은 평일 09:00~18:00 사이에, 각 팀의 팀장이 팀장 톡방에 미션 인증샷을 올려주시면 됩니다.' },
+    { cat:'참여·인증', q:'미션에 모든 팀원이 다 참여해야 하나요?',
+      a:'아닙니다. 팀원 중 절반 이상이 참여하면 됩니다. 예를 들어 7명인 팀은 최소 4명이 참여해야 합니다. 단, 2명인 팀은 2명 전원이 참여해야 미션 수행으로 인정됩니다.' },
+    { cat:'참여·인증', q:'빙고판 미션을 수행하면 완료 체크는 어떻게 하나요?',
+      a:'운영자가 미션 수행을 확인한 뒤, 체크 표시와 함께 “확인했습니다” 톡을 남겨드립니다. 두 가지가 모두 확인되면, 각 팀별 상징 이모지로 빙고판을 채우시면 됩니다.' },
+    { cat:'릴스', q:'릴스는 길이가 어느 정도 되어야 하나요?',
+      a:'릴스 길이는 최소 15초에서 최대 60초이면 됩니다.' },
+    { cat:'릴스', q:'릴스는 모든 팀원이 출연해야 하나요?',
+      a:'릴스도 일반 미션과 마찬가지로 팀원 중 절반 이상이 출연해야 합니다. 단, 2명인 팀은 한 명 출연·한 명 촬영으로 진행해도 됩니다.' },
+    { cat:'일정', q:'프로그램 기간(7. 1. ~ 7. 24.) 중 조기 마감될 수도 있나요?',
+      a:'네. 7월 1일~7월 24일 기간 중 6팀이 12줄을 모두 채우면 미션은 조기 종료됩니다.' }
+  ];
+  /* ▲▲▲  여기까지  ▲▲▲ */
+
+  let activeCat = '전체';
+
+  /* 카테고리 칩 생성 (자동) */
+  function renderChips(){
+    const cats = ['전체', ...Array.from(new Set(faqs.map(f => f.cat)))];
+    document.getElementById('chips').innerHTML = cats.map(c =>
+      `<button class="chip${c===activeCat?' active':''}" onclick="setCat('${c.replace(/'/g,"\\'")}')">${c}</button>`
+    ).join('');
+  }
+
+  /* 질문 목록 생성 */
+  function renderFaqs(){
+    document.getElementById('faq-list').innerHTML = faqs.map((f,i) => {
+      const text = (f.q + ' ' + f.a).toLowerCase().replace(/"/g,'');
+      return `
+      <div class="faq-item" data-cat="${f.cat}" data-text="${text}">
+        <button class="faq-q" onclick="toggleItem(${i})">
+          <span class="faq-num">${i+1}</span>
+          <span class="flex-1">${f.q}</span>
+          <svg class="ic w-5 h-5 chev"><use href="#i-chevron-down"/></svg>
+        </button>
+        <div class="faq-a">${f.a}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function toggleItem(i){
+    const items = document.querySelectorAll('.faq-item');
+    items[i].classList.toggle('open');
+  }
+
+  function setCat(c){
+    activeCat = c;
+    document.querySelectorAll('.chip').forEach(ch => {
+      ch.classList.toggle('active', ch.textContent === c);
+    });
+    applyFilter();
+  }
+
+  function clearSearch(){
+    document.getElementById('search').value = '';
+    applyFilter();
+  }
+
+  function applyFilter(){
+    const q = (document.getElementById('search').value || '').trim().toLowerCase();
+    document.getElementById('search-clear').classList.toggle('hidden', q.length === 0);
+    let shown = 0;
+    document.querySelectorAll('.faq-item').forEach(it => {
+      const okCat  = activeCat === '전체' || it.dataset.cat === activeCat;
+      const okText = !q || it.dataset.text.includes(q);
+      const show = okCat && okText;
+      it.style.display = show ? '' : 'none';
+      if(!show) it.classList.remove('open');
+      if(show) shown++;
+    });
+    document.getElementById('noresult').classList.toggle('hidden', shown > 0);
+  }
+
+  /* 문의 버튼 클릭 시 안내문 표시 */
+  function showContact(type){
+    const box = document.getElementById('contact-msg');
+    const txt = document.getElementById('contact-msg-text');
+    const ic  = document.getElementById('contact-msg-ic');
+    if(type === 'kakao'){
+      ic.innerHTML  = '<svg class="ic w-5 h-5"><use href="#i-chat"/></svg>';
+      txt.innerHTML = '<b>청년정책과 청년인턴 이훈</b>에게 <b>카카오톡</b>으로 문의해 주세요.';
+    } else {
+      ic.innerHTML  = '<svg class="ic w-5 h-5"><use href="#i-mail"/></svg>';
+      txt.innerHTML = '<b>청년정책과 청년인턴 이훈</b>에게 <b>내부메일</b>로 문의해 주세요.';
+    }
+    box.classList.remove('hidden');
+  }
+
+  /* ===== 스크롤 (요소로 이동 — 함수명은 충돌 없는 이름 사용) ===== */
+  function scrollToId(id){
+    const el = document.getElementById(id);
+    if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  /* 초기화 */
+  renderChips();
+  renderFaqs();
+  applyFilter();
+
+  /* 스크롤 등장 */
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold:0.1 });
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
